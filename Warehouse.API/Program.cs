@@ -1,4 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Warehouse.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+services.AddDbContext<WarehouseDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 // Add services to the container.
 

@@ -5,7 +5,7 @@ using Warehouse.Logic.Stores;
 
 namespace Warehouse.Persistence.Repositories;
 
-public class StorageCellRepository : IStorageCellEntity
+public class StorageCellRepository : IStorageCellStore
 {
     private readonly WarehouseDbContext _context;
 

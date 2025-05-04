@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Warehouse.Application.Interfaces;
+using Warehouse.Application.Mapping;
 using Warehouse.Persistence;
 
 namespace Warehouse.Controllers;
@@ -28,7 +29,7 @@ public class ZoneController : ControllerBase
             return NotFound("Warehouse not found");
         }
         var zones = await _zoneService.GetByWarehouse(warehouseId);
-        return Ok(zones);
+        return Ok(zones.Select(x=>x.ToDto()));
     }
 
     [HttpGet("{id}")]
@@ -39,7 +40,7 @@ public class ZoneController : ControllerBase
         {
             return NotFound();
         }
-        return Ok(zone);
+        return Ok(zone.ToDto());
     }
 
     

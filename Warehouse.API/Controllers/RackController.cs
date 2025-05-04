@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Warehouse.Application.Dto.Rack;
 using Warehouse.Application.Interfaces;
+using Warehouse.Application.Mapping;
 using Warehouse.Logic.Entities;
 
 namespace Warehouse.Controllers;
@@ -20,7 +22,7 @@ public class RackController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<RackEntity>>> GetByZone(Guid zoneId)
     {
         var racks = await _rackService.GetByZone(zoneId);
-        return Ok(racks);
+        return Ok(racks.Select(x=>x.ToShortDto()));
     }
 
     [HttpGet("{id}")]
@@ -31,17 +33,17 @@ public class RackController : ControllerBase
         {
             return NotFound();
         }
-        return Ok(rack);
+        return Ok(rack.ToDto());
     }
 
     [HttpPost]
-    public async Task<ActionResult<RackEntity>> AddRack(CreateUpdateRackDto dto)
+    public async Task<ActionResult> AddRack(CreateUpdateRackDto dto)
     {
         var rack = await _rackService.AddRack(dto);
-        return CreatedAtAction(nameof(GetById), new { id = rack.Id }, rack);
+        return Ok("Rack created successfully");
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateRack(Guid id, CreateUpdateRackDto dto)
     {
         await _rackService.UpdateRack(id, dto);

@@ -6,9 +6,9 @@ namespace Warehouse.Application.Services;
 
 public class StorageCellService : IStorageCellService
 {
-    private readonly IStorageCellEntity _storageCellRepository;
+    private readonly IStorageCellStore _storageCellRepository;
 
-    public StorageCellService(IStorageCellEntity storageCellRepository)
+    public StorageCellService(IStorageCellStore storageCellRepository)
     {
         _storageCellRepository = storageCellRepository;
     }
@@ -29,7 +29,7 @@ public class StorageCellService : IStorageCellService
         {
             Id = Guid.NewGuid(),
             RackId = rackEntity.Id,
-            /*Volume = volume,*/
+            Volume = volume,
             Rack = rackEntity,
             Code = $"{rackEntity.Code}-{level.ToString()}-{row.ToString()}",
             Boxes = new List<BoxEntity>(),

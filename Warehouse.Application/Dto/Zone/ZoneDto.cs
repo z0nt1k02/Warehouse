@@ -1,3 +1,8 @@
-﻿namespace Warehouse.Application.Dto.Warehouse;
+﻿using Warehouse.Application.Dto.Rack;
 
-public record ZoneDto();
+namespace Warehouse.Application.Dto.Warehouse;
+
+public record ZoneDto(Guid id,
+    string Name,
+    Guid WarehouseId,
+    List<RackShortDto> Racks);

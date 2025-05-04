@@ -14,5 +14,13 @@ public static class DIExtensions
 
         services.AddScoped<IZoneStore, ZoneRepository>();
         services.AddScoped<IZoneService, ZoneService>();
+        
+      
+        services.AddScoped<IRackService, RackService>();
+        services.AddScoped<IRackStore, RackRepository>();
+        
+        services.AddScoped<IStorageCellService,StorageCellService>();   
+        services.AddScoped<IStorageCellStore, StorageCellRepository>();
+
     }
 }

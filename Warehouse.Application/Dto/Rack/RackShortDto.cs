@@ -2,4 +2,4 @@
 
 namespace Warehouse.Application.Dto.Rack;
 
-public record RackDto(Guid Id,string Code,List<StorageCellShortDto> cells);
+public record RackShortDto(Guid Id,string Code);

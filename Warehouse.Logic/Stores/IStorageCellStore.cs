@@ -2,7 +2,7 @@
 
 namespace Warehouse.Logic.Stores;
 
-public interface IStorageCellEntity
+public interface IStorageCellStore
 {
     Task<List<StorageCellEntity>> GetByRack(Guid zoneId);
     Task<StorageCellEntity?> GetById(Guid id);

@@ -28,9 +28,9 @@ public class ZoneService : IZoneService
         return zones;
     }
 
-    public Task<ZoneEntity?> GetById(Guid id)
+    public async Task<ZoneEntity?> GetById(Guid id)
     {
-        var zone = _zoneStore.GetById(id);
+        var zone = await _zoneStore.GetById(id);
         if (zone == null)
             throw new Exception($"Zone with id: {id} not found");
         return zone;

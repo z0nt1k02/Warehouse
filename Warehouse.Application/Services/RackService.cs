@@ -1,20 +1,28 @@
 ﻿using Warehouse.Application.Dto.Rack;
 using Warehouse.Application.Interfaces;
 using Warehouse.Logic.Entities;
+using Warehouse.Logic.Enums;
 using Warehouse.Logic.Stores;
+using Warehouse.Persistence;
 
 namespace Warehouse.Application.Services;
 
 public class RackService : IRackService
 {
     private readonly IRackStore _rackStore;
-    private readonly StorageCellService _storageCellService;
+    private readonly IStorageCellService _storageCellService;
+    private readonly IZoneService _zoneService;
+    private readonly WarehouseDbContext _context;
+    
 
-    public RackService(IRackStore rackStore,StorageCellService storageCellService)
+    public RackService(IRackStore rackStore,IStorageCellService storageCellService,IZoneService zoneService,WarehouseDbContext context)
     {
         _rackStore = rackStore;
         _storageCellService = storageCellService;
+        _zoneService = zoneService;
+        _context = context;
     }
+    
 
     public async Task<IReadOnlyList<RackEntity>> GetByZone(Guid zoneId)
     {
@@ -29,17 +37,23 @@ public class RackService : IRackService
 
     public async Task<RackEntity> AddRack(CreateUpdateRackDto dto)
     {
+        var zone = await _zoneService.GetById(dto.ZoneId);
+        if (zone == null || zone.Type != ZoneType.Storage)
+            throw new NullReferenceException("Zone not found");
+        
         var rack = new RackEntity
         {
             Id = Guid.NewGuid(),
-            // Заполните свойства объекта `RackEntity` из `dto`
             Code = dto.Code,
             LevelsCount = dto.LevelCount,
             CellsPerLevel = dto.CellsOnLevel,
-            Cells = new List<StorageCellEntity>()
+            Cells = new List<StorageCellEntity>(),
+            Zone = zone,
+            ZoneId = zone.Id
         };
         await _rackStore.Add(rack);
-        await CreateStorageCell(rack);
+        await CreateStorageCell(rack,dto.CellVolume);
+        await _context.SaveChangesAsync();
         return rack;
     }
 
@@ -67,13 +81,13 @@ public class RackService : IRackService
         await _rackStore.Delete(rack);
     }
 
-    private async Task CreateStorageCell(RackEntity rackEntity)
+    private async Task CreateStorageCell(RackEntity rackEntity,int volume )
     {
         for(int i = 0;i<rackEntity.LevelsCount;i++)
         {
             for(int j = 0;j<rackEntity.CellsPerLevel;j++)
             {
-                /*await _storageCellService.AddStorageCell(rackEntity,i+1,j+1);*/
+                await _storageCellService.AddStorageCell(rackEntity,i+1,j+1,volume);
             }
         }
     }

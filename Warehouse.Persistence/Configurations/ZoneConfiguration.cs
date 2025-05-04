@@ -12,9 +12,7 @@ public class ZoneConfiguration : IEntityTypeConfiguration<ZoneEntity>
 
         builder.HasOne(x => x.Warehouse)
             .WithMany(x => x.Zones);
-        
-        builder.HasMany(z=>z.Sectors)
-            .WithOne(s=>s.Zone)
-            .HasForeignKey(s=>s.ZoneId);
+        builder.HasMany(z=>z.Racks)
+            .WithOne(s=>s.Zone);
     }
 }

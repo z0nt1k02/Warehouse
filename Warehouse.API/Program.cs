@@ -1,4 +1,7 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Warehouse.Extensions;
 using Warehouse.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,14 +10,22 @@ var configuration = builder.Configuration;
 
 services.AddDbContext<WarehouseDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
 });
 
-// Add services to the container.
 
+services.AddCustomService();
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
+
+services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1",new OpenApiInfo{Title = "Warehouse",Version = "v1"});
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 var app = builder.Build();
 
@@ -23,6 +34,12 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Warehouse v1");
+});
 
 app.UseHttpsRedirection();
 

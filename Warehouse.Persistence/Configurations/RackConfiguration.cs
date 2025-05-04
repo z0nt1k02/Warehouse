@@ -10,9 +10,9 @@ public class RackConfiguration : IEntityTypeConfiguration<RackEntity>
     {
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(x => x.Sector)
+        builder.HasOne(x => x.Zone)
             .WithMany(x => x.Racks)
-            .HasForeignKey(x => x.SectorId);
+            .HasForeignKey(x => x.ZoneId);
         
         builder.HasMany(r=>r.Cells)
             .WithOne(x => x.Rack)

@@ -9,5 +9,6 @@ public class ZoneEntity
     public ZoneType Type { get; set; } // Тип зоны (enum)
     public Guid WarehouseId { get; set; }
     public WarehouseEntity? Warehouse { get; set; }
-    public List<SectorEntity> Sectors { get; set; } = [];
+    
+    public List<RackEntity>? Racks { get; set; }=[];
 }
